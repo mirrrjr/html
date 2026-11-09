@@ -1,43 +1,336 @@
 <!doctype html>
-<html lang="en">
+<html lang="uz">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
+        <title>HTML asoslari: test</title>
         <style>
-            .box {
-                position: absolute;
-                top: 80px;
-                left: 500px;
-                background-color: red;
-                width: 300px;
-                height: 500px;
+            :root {
+                --navy: #1d2b3a;
+                --teal: #2f6f5e;
+                --bg: #fbfbf8;
+                --card: #ffffff;
+                --text: #1a1a1a;
+                --muted: #6a7179;
+                --border: #e3e6e4;
+                --bad: #b3261e;
+                --good: #2f6f5e;
+            }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --bg: #14202c;
+                    --card: #1d2b3a;
+                    --text: #f4f1ea;
+                    --muted: #9fb0c0;
+                    --border: #2f3f51;
+                    --navy: #f4f1ea;
+                    --teal: #6fc3a8;
+                    --good: #6fc3a8;
+                    --bad: #ff8a80;
+                }
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                background: var(--bg);
+                color: var(--text);
+                font-family: Helvetica, Arial, sans-serif;
+                line-height: 1.5;
+            }
+            main {
+                max-width: 760px;
+                margin: 0 auto;
+                padding: 24px 16px 64px;
+            }
+            h1 {
+                font-family: Georgia, serif;
+                font-weight: 400;
+                font-size: 28px;
+                margin: 8px 0 4px;
+            }
+            .sub {
+                color: var(--muted);
+                margin: 0 0 20px;
+            }
+            .q {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 16px 18px;
+                margin-bottom: 14px;
+            }
+            .q p {
+                margin: 0 0 8px;
+                font-weight: 600;
+            }
+            .opt {
+                display: flex;
+                gap: 10px;
+                align-items: flex-start;
+                padding: 6px 4px;
+                cursor: pointer;
+            }
+            .opt input {
+                margin-top: 4px;
+            }
+            .opt code {
+                font-family: Menlo, Consolas, monospace;
+                font-size: 14px;
+            }
+            .fb {
+                margin-top: 8px;
+                font-size: 14px;
+            }
+            .fb.ok {
+                color: var(--good);
+            }
+            .fb.no {
+                color: var(--bad);
+            }
+            button {
+                background: var(--teal);
+                color: #fff;
+                border: 0;
+                border-radius: 10px;
+                padding: 12px 22px;
+                font-size: 16px;
+                cursor: pointer;
+            }
+            button:disabled {
+                opacity: 0.5;
+                cursor: default;
+            }
+            #result {
+                margin-top: 20px;
+                font-size: 20px;
+                font-weight: 600;
+            }
+            .bar {
+                position: sticky;
+                top: 0;
+                background: var(--bg);
+                padding: 8px 0;
+                font-size: 14px;
+                color: var(--muted);
             }
         </style>
     </head>
     <body>
-        <div class="box">
-            <h1>Login</h1>
-            <form>
-                <input type="text" placeholder="Login..." />
-                <br />
-                <br />
-                <input type="password" placeholder="Password..." />
-                <br />
-                <br />
-                <input type="email" placeholder="Email..." />
-                <br />
-                <br />
-                <textarea
-                    cols="20"
-                    rows="10"
-                    placeholder="Malumot, ko'roq..."
-                ></textarea>
-                <br />
-                <br />
-                <!-- <button type="button">Yuborish</button> -->
-                <input type="submit" value="Yuborish" />
-            </form>
-        </div>
+        <main>
+            <h1>HTML asoslari: test</h1>
+            <p class="sub">
+                20 savol · har biri 1 ball · javoblarni tanlang va "Tekshirish"
+                ni bosing.
+            </p>
+            <form id="quiz" onsubmit="return false;"></form>
+            <button id="check">Tekshirish</button>
+            <div id="result"></div>
+        </main>
+        <script>
+            const QUESTIONS = [
+                {
+                    q: "Quyidagilardan qaysi biri juft teg?",
+                    o: ["<br>", "<img>", "<p>", "<hr>"],
+                    a: 2,
+                },
+                {
+                    q: "Yopuvchi teg qaysi belgi bilan boshlanadi?",
+                    o: ["/ (slesh)", "! (undov)", "# (diyez)", "? (so'roq)"],
+                    a: 0,
+                },
+                {
+                    q: '<img src="a.jpg" alt="x"> qaysi turga kiradi?',
+                    o: ["Juft teg", "Komment", "Doctype", "Bo'sh (toq) teg"],
+                    a: 3,
+                },
+                {
+                    q: "href atributi nima uchun ishlatiladi?",
+                    o: [
+                        "Rasm manzilini",
+                        "Havola manzilini",
+                        "Sarlavha matnini",
+                        "Matn rangini",
+                    ],
+                    a: 1,
+                },
+                {
+                    q: "alt atributi nima uchun kerak?",
+                    o: [
+                        "Matn rangi uchun",
+                        "O'lcham uchun",
+                        "Havola uchun",
+                        "Rasm yuklanmasa yoki ekran o'qish uchun matn",
+                    ],
+                    a: 3,
+                },
+                {
+                    q: "Qaysi kod to'g'ri teglangan?",
+                    o: [
+                        "<p>Bu <b>muhim</p></b>",
+                        "<p>Bu <b>muhim</b>",
+                        "<p>Bu <b>muhim</b></p>",
+                        "<p>Bu muhim</b></p>",
+                    ],
+                    a: 2,
+                },
+                {
+                    q: "Kodda <div><p>Matn</div></p> xatomi?",
+                    o: [
+                        "Ha, p va div noto'g'ri tartibda yopilgan",
+                        "Yo'q, xato yo'q",
+                        "Ha, div yopilmagan",
+                        "Yo'q, brauzer hammasini tuzatadi",
+                    ],
+                    a: 0,
+                },
+                {
+                    q: "Ichma-ich joylashtirish qoidasi qaysi?",
+                    o: [
+                        "Oxirgi ochilgan teg birinchi yopiladi",
+                        "Teglar yopilishi shart emas",
+                        "Yopish tartibi ixtiyoriy",
+                        "Birinchi ochilgan teg oxirida yopiladi",
+                    ],
+                    a: 3,
+                },
+                {
+                    q: "<!DOCTYPE html> nima?",
+                    o: [
+                        "CSS fayl",
+                        "HTML tegi",
+                        "Sarlavha",
+                        "Brauzerga HTML5 hujjat ekanini bildiruvchi ko'rsatma",
+                    ],
+                    a: 3,
+                },
+                {
+                    q: 'lang="uz" atributi qaysi tegga yoziladi?',
+                    o: ["body", "title", "html", "head"],
+                    a: 2,
+                },
+                {
+                    q: "Ko'rinmas ma'lumotlar (meta, title) qaysi bo'limda joylashadi?",
+                    o: ["body", "head", "footer", "main"],
+                    a: 1,
+                },
+                {
+                    q: "Foydalanuvchi ko'radigan mazmun qaysi bo'limda joylashadi?",
+                    o: ["head", "title", "meta", "body"],
+                    a: 3,
+                },
+                {
+                    q: "O', g', sh, ch harflari to'g'ri ko'rinishi uchun qaysi meta teg kerak?",
+                    o: ["charset", "viewport", "title", "link"],
+                    a: 0,
+                },
+                {
+                    q: "title qayerda ko'rinadi?",
+                    o: [
+                        "Sahifa ichida",
+                        "Sahifa pastida",
+                        "Brauzer oynasining sarlavha qatorida",
+                        "Rasm ustida",
+                    ],
+                    a: 2,
+                },
+                {
+                    q: "Sahifaning asosiy mazmuni uchun qaysi semantik teg ishlatiladi?",
+                    o: ["nav", "header", "aside", "main"],
+                    a: 3,
+                },
+                {
+                    q: "Menyu havolalari to'plami uchun qaysi teg?",
+                    o: ["nav", "article", "header", "section"],
+                    a: 0,
+                },
+                {
+                    q: "Mustaqil maqola yoki kartochka uchun qaysi teg?",
+                    o: ["section", "div", "article", "aside"],
+                    a: 2,
+                },
+                {
+                    q: "Sahifaning pastki qismi (mualliflik yozuvi) uchun qaysi teg?",
+                    o: ["header", "footer", "main", "aside"],
+                    a: 1,
+                },
+                {
+                    q: "Bitta sahifada nechta h1 bo'lishi tavsiya etiladi?",
+                    o: ["Bir nechta", "Ixtiyoriy son", "Hech qancha", "Bitta"],
+                    a: 3,
+                },
+                {
+                    q: "Sarlavhalarning to'g'ri ketma-ketligi qaysi?",
+                    o: ["h1, h2, h3", "h1, h4", "h2, h1", "h1, h6"],
+                    a: 0,
+                },
+            ];
+
+            const form = document.getElementById("quiz");
+            QUESTIONS.forEach((item, i) => {
+                const div = document.createElement("div");
+                div.className = "q";
+                const qp = document.createElement("p");
+                qp.textContent = i + 1 + ". " + item.q;
+                div.appendChild(qp);
+                item.o.forEach((opt, j) => {
+                    const label = document.createElement("label");
+                    label.className = "opt";
+                    const input = document.createElement("input");
+                    input.type = "radio";
+                    input.name = "q" + i;
+                    input.value = j;
+                    const span = document.createElement("span");
+                    span.textContent = "abcd"[j] + ") " + opt;
+                    label.append(input, span);
+                    div.appendChild(label);
+                });
+                const fb = document.createElement("div");
+                fb.className = "fb";
+                fb.id = "fb" + i;
+                div.appendChild(fb);
+                form.appendChild(div);
+            });
+
+            document.getElementById("check").addEventListener("click", () => {
+                let score = 0;
+                QUESTIONS.forEach((item, i) => {
+                    const chosen = document.querySelector(
+                        `input[name="q${i}"]:checked`,
+                    );
+                    const fb = document.getElementById("fb" + i);
+                    if (!chosen) {
+                        fb.className = "fb no";
+                        fb.textContent =
+                            "Javob tanlanmagan. To'g'ri javob: " +
+                            "abcd"[item.a];
+                        return;
+                    }
+                    if (Number(chosen.value) === item.a) {
+                        score++;
+                        fb.className = "fb ok";
+                        fb.textContent = "To'g'ri";
+                    } else {
+                        fb.className = "fb no";
+                        fb.textContent =
+                            "Noto'g'ri. To'g'ri javob: " +
+                            "abcd"[item.a] +
+                            ") " +
+                            item.o[item.a];
+                    }
+                });
+                const pass = score >= 14;
+                document.getElementById("result").textContent =
+                    `Natija: ${score} / 20 · ${pass ? "O'tdingiz" : "Mavzuni qayta ko'rib chiqing (o'tish: 14 ta)"}`;
+                document.getElementById("result").style.color = pass
+                    ? "var(--good)"
+                    : "var(--bad)";
+                window.scrollTo({
+                    top: document.getElementById("result").offsetTop - 20,
+                    behavior: "smooth",
+                });
+            });
+        </script>
     </body>
 </html>
